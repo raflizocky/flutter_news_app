@@ -32,6 +32,7 @@ class Article {
   final String? urlToImage;
   final DateTime? publishedAt;
   final String? content;
+  bool isFavorite;
 
   Article({
     this.author,
@@ -41,6 +42,7 @@ class Article {
     this.urlToImage,
     this.publishedAt,
     this.content,
+    this.isFavorite = false,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) => Article(
@@ -53,6 +55,7 @@ class Article {
             ? DateTime.parse(json["publishedAt"])
             : null,
         content: json["content"],
+        isFavorite: json["isFavorite"] == 1,
       );
 
   Map<String, dynamic> toJson() => {
@@ -63,6 +66,7 @@ class Article {
         'urlToImage': urlToImage,
         'publishedAt': publishedAt?.toIso8601String(),
         'content': content,
+        'isFavorite': isFavorite ? 1 : 0,
       };
 
   bool isValid() =>

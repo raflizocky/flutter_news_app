@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '/data/model/article.dart';
 import '/data/network/api_service.dart';
+import '/data/local/database_helper.dart';
 import '../widgets/article_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,12 +13,62 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final ApiService _apiService = ApiService();
-  late Future<ArticlesResult> _articlesFuture;
+  List<Article> _articles = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _articlesFuture = _apiService.topHeadlines();
+    _loadArticles();
+  }
+
+  Future<void> _loadArticles() async {
+    setState(() => _isLoading = true);
+
+    // First, try to get articles from the database
+    _articles = await DatabaseHelper.instance.getAllArticles();
+
+    // If the database is empty, fetch from API and save to database
+    if (_articles.isEmpty) {
+      final articlesResult = await _apiService.topHeadlines();
+      _articles = articlesResult.articles;
+      for (var article in _articles) {
+        await DatabaseHelper.instance.insertArticle(article);
+      }
+    }
+
+    setState(() => _isLoading = false);
+  }
+
+  Future<void> _refreshArticles() async {
+    setState(() => _isLoading = true);
+
+    // Fetch new data from the API
+    final articlesResult = await _apiService.topHeadlines();
+    List<Article> newArticles = articlesResult.articles;
+
+    // Get existing articles from the database
+    List<Article> existingArticles =
+        await DatabaseHelper.instance.getAllArticles();
+
+    // Create a map of existing articles for quick lookup
+    Map<String, Article> existingArticlesMap = {
+      for (var article in existingArticles) article.url: article
+    };
+
+    // Update the database with new articles, preserving favorite status
+    for (var newArticle in newArticles) {
+      if (existingArticlesMap.containsKey(newArticle.url)) {
+        // If the article already exists, preserve its favorite status
+        newArticle.isFavorite = existingArticlesMap[newArticle.url]!.isFavorite;
+      }
+      await DatabaseHelper.instance.insertArticle(newArticle);
+    }
+
+    // Update the _articles list with the new data
+    _articles = await DatabaseHelper.instance.getAllArticles();
+
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -25,26 +76,32 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Top Headlines'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _refreshArticles,
+          ),
+        ],
       ),
-      body: FutureBuilder<ArticlesResult>(
-        future: _articlesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.articles.length,
-              itemBuilder: (context, index) {
-                return ArticleCard(article: snapshot.data!.articles[index]);
-              },
-            );
-          } else {
-            return const Center(child: Text('No data available'));
-          }
-        },
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: _refreshArticles,
+              child: ListView.builder(
+                itemCount: _articles.length,
+                itemBuilder: (context, index) {
+                  return ArticleCard(
+                    article: _articles[index],
+                    onFavoriteChanged: () {
+                      // Update the local list when favorite status changes
+                      setState(() {
+                        _articles[index] = _articles[index];
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
     );
   }
 }
