@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '/data/model/article.dart';
+import 'package:flutter_news_app/data/model/article.dart';
+import 'package:flutter_news_app/ui/pages/detail_web_view.dart';
 
 class ArticleCard extends StatelessWidget {
   final Article article;
@@ -12,6 +13,14 @@ class ArticleCard extends StatelessWidget {
       elevation: 4,
       margin: const EdgeInsets.all(8),
       child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ArticleWebView(article: article),
+            ),
+          );
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
