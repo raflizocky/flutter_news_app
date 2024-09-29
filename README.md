@@ -1,16 +1,15 @@
-# flutter_news_app
+# Flutter News App 📰
 
-A new Flutter project.
+A simple Flutter application that fetches and displays the latest news headlines using the [NewsAPI](https://newsapi.org). Users can browse top headlines, view article details, and manage their favorite articles.
 
-## Getting Started
+## Features 🤹‍♀️
 
-This project is a starting point for a Flutter application.
+- Home: Top Headlines
+- Detail: WebView
+- Favorite: List Favorite
 
-A few resources to get you started if this is your first Flutter project:
+## Demo 🪟
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<img src="demo-img/home.jpg" width="249" alt="Demo 1" /> <img src="demo-img/webview.jpg" width="249" alt="Demo 2" /> <img src="demo-img/favorite.jpg" width="249" alt="Demo 3" />
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
