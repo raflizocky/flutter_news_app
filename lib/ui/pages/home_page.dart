@@ -22,13 +22,14 @@ class HomePageState extends State<HomePage> {
     _loadArticles();
   }
 
+  // load articles from local db/API
   Future<void> _loadArticles() async {
     setState(() => _isLoading = true);
 
-    // First, try to get articles from the database
+    // get articles from db
     _articles = await DatabaseHelper.instance.getAllArticles();
 
-    // If the database is empty, fetch from API and save to database
+    // If db is empty, fetch from API and save to db
     if (_articles.isEmpty) {
       final articlesResult = await _apiService.topHeadlines();
       _articles = articlesResult.articles;
@@ -40,6 +41,7 @@ class HomePageState extends State<HomePage> {
     setState(() => _isLoading = false);
   }
 
+  // refresh articles from API
   Future<void> _refreshArticles() async {
     setState(() => _isLoading = true);
 
@@ -47,7 +49,7 @@ class HomePageState extends State<HomePage> {
     final articlesResult = await _apiService.topHeadlines();
     List<Article> newArticles = articlesResult.articles;
 
-    // Get existing articles from the database
+    // Get existing articles from the db
     List<Article> existingArticles =
         await DatabaseHelper.instance.getAllArticles();
 
@@ -56,7 +58,7 @@ class HomePageState extends State<HomePage> {
       for (var article in existingArticles) article.url: article
     };
 
-    // Update the database with new articles, preserving favorite status
+    // Update the db with new articles, preserving favorite status
     for (var newArticle in newArticles) {
       if (existingArticlesMap.containsKey(newArticle.url)) {
         // If the article already exists, preserve its favorite status

@@ -18,6 +18,7 @@ class _ArticleWebViewState extends State<ArticleWebView> {
   @override
   void initState() {
     super.initState();
+    // initialize WebViewController
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(

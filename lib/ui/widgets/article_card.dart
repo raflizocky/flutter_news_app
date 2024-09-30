@@ -116,6 +116,7 @@ class ArticleCardState extends State<ArticleCard> {
     );
   }
 
+  // build image widget for article
   Widget _buildImage() {
     return widget.article.urlToImage != null
         ? Image.network(
@@ -146,6 +147,7 @@ class ArticleCardState extends State<ArticleCard> {
           );
   }
 
+  // toggle favorite status of article
   void _toggleFavorite() async {
     setState(() {
       _isFavorite = !_isFavorite;

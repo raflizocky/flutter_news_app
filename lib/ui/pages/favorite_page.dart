@@ -19,6 +19,7 @@ class FavoritePageState extends State<FavoritePage> {
     _refreshFavorites();
   }
 
+  // refresh the list of favorite articles
   void _refreshFavorites() {
     setState(() {
       _favoriteArticles = DatabaseHelper.instance.getFavoriteArticles();

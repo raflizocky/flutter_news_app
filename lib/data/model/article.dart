@@ -9,6 +9,7 @@ class ArticlesResult {
     required this.articles,
   });
 
+  // convert JSON data -> ArticlesResult
   factory ArticlesResult.fromJson(Map<String, dynamic> json) => ArticlesResult(
         status: json["status"],
         totalResults: json["totalResults"],
@@ -17,6 +18,7 @@ class ArticlesResult {
             .where((article) => article.isValid())),
       );
 
+  // convert ArticlesResult -> JSON
   Map<String, dynamic> toJson() => {
         'status': status,
         'totalResults': totalResults,
@@ -45,6 +47,7 @@ class Article {
     this.isFavorite = false,
   });
 
+  // convert JSON data -> Article
   factory Article.fromJson(Map<String, dynamic> json) => Article(
         author: json["author"],
         title: json["title"],
@@ -58,6 +61,7 @@ class Article {
         isFavorite: json["isFavorite"] == 1,
       );
 
+  // convert Article -> JSON
   Map<String, dynamic> toJson() => {
         'author': author,
         'title': title,
@@ -69,6 +73,7 @@ class Article {
         'isFavorite': isFavorite ? 1 : 0,
       };
 
+  // Check if the Article has all required fields
   bool isValid() =>
       author != null &&
       description != null &&
