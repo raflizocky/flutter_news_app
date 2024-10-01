@@ -12,4 +12,6 @@ A simple Flutter application that fetches and displays the latest news headlines
 
 <img src="demo-img/home.jpg" width="249" alt="Demo 1" /> <img src="demo-img/webview.jpg" width="249" alt="Demo 2" /> <img src="demo-img/favorite.jpg" width="249" alt="Demo 3" />
 
+<img src="demo-img/no-internet.jpg" width="249" alt="Demo 4" />
+
 ---
