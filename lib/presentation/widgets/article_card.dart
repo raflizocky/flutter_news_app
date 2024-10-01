@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '/data/model/article.dart';
-import '/data/local/database_helper.dart';
-import '../pages/detail_web_view.dart';
+import '../../data/models/article.dart';
+import '../../data/services/database_helper.dart';
+import '../views/detail_web_view.dart';
 
 class ArticleCard extends StatefulWidget {
   final Article article;

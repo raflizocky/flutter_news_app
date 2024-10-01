@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '/data/model/article.dart';
-import '/data/local/database_helper.dart';
+import '../../data/models/article.dart';
+import '../../data/services/database_helper.dart';
 import '../widgets/article_card.dart';
 
 class FavoritePage extends StatefulWidget {
@@ -31,12 +31,6 @@ class FavoritePageState extends State<FavoritePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Favorites'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _refreshFavorites,
-          ),
-        ],
       ),
       body: FutureBuilder<List<Article>>(
         future: _favoriteArticles,
@@ -46,22 +40,17 @@ class FavoritePageState extends State<FavoritePage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                _refreshFavorites();
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ArticleCard(
+                  article: snapshot.data![index],
+                  onFavoriteChanged: () {
+                    // Refresh the list when a favorite is toggled
+                    _refreshFavorites();
+                  },
+                );
               },
-              child: ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return ArticleCard(
-                    article: snapshot.data![index],
-                    onFavoriteChanged: () {
-                      // Refresh the list when a favorite is toggled
-                      _refreshFavorites();
-                    },
-                  );
-                },
-              ),
             );
           } else {
             return const Center(child: Text('No favorite articles yet.'));
